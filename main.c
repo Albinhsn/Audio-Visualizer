@@ -44,6 +44,7 @@ int main() {
     BeginDrawing();
 
     ClearBackground(RAYWHITE);
+
     DrawPillars(pillars, NUMBER_OF_PILLARS);
 
     EndDrawing();
