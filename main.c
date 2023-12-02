@@ -21,16 +21,27 @@ void InitPillars(struct Pillar *pillars, int length) {
 void DrawPillars(struct Pillar *pillars, int length) {
   for (int i = 0; i < length; i++) {
     struct Pillar pillar = pillars[i];
-    DrawRectangle(pillar.x, SCREEN_HEIGHT - pillar.height, PILLAR_WIDTH, pillar.height, BLUE);
+    DrawRectangle(pillar.x, SCREEN_HEIGHT - pillar.height, PILLAR_WIDTH,
+                  pillar.height, BLUE);
   }
 }
 
 int main() {
 
+  char *file_path = "./music/EQ.mp3";
+
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT,
              "raylib [core] example - basic window");
   struct Pillar pillars[NUMBER_OF_PILLARS];
   InitPillars(pillars, NUMBER_OF_PILLARS);
+
+  InitAudioDevice();
+
+  Music music = LoadMusicStream(file_path);
+
+  PlayMusicStream(music);
+  float timePlayed = 0.0f;
+  bool pause = false;
 
   SetTargetFPS(60);
 
@@ -38,6 +49,13 @@ int main() {
   while (!WindowShouldClose()) // Detect window close button or ESC key
   {
     // Update
+    UpdateMusicStream(music);
+
+    timePlayed = GetMusicTimePlayed(music) / GetMusicTimeLength(music);
+
+    if (timePlayed > 1.0f) {
+      timePlayed = 1.0f;
+    }
 
     // Draw
     //----------------------------------------------------------------------------------
@@ -53,6 +71,8 @@ int main() {
 
   // De-Initialization
   //--------------------------------------------------------------------------------------
+  UnloadMusicStream(music);
+  CloseAudioDevice();
   CloseWindow(); // Close window and OpenGL context
   //--------------------------------------------------------------------------------------orld\n");
 }

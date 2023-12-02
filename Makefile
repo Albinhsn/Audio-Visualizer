@@ -8,7 +8,4 @@ b:
 	gcc -o main  $(FILES) $(LIBS)
 
 r:
-	./main $(MUSIC_FILE)
-
-br:
 	gcc -o main $(FILES) $(LIBS) && ./main $(MUSIC_FILE)
