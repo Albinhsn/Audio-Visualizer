@@ -1,5 +1,6 @@
 #include <raylib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define PILLAR_DISTANCE 65
 #define PILLAR_WIDTH 38
@@ -9,12 +10,15 @@
 
 struct Pillar {
   int x;
-  int height;
+  float height;
 };
 
-void InitPillars(struct Pillar *pillars, int length) {
+static struct Pillar pillars[10];
+static float averageFrequencies[10] = {0.0f};
+
+void InitPillars(int length) {
   for (int i = 0; i < length; i++) {
-    pillars[i] = (struct Pillar){25 + PILLAR_DISTANCE * i, 100};
+    pillars[i] = (struct Pillar){25 + PILLAR_DISTANCE * i, 100.0f};
   }
 }
 
@@ -26,18 +30,28 @@ void DrawPillars(struct Pillar *pillars, int length) {
   }
 }
 
+void ProcessAudio(void *buffer, unsigned int frames) {
+  float *samples = (float *)buffer;
+  float average = 0.0f;
+  printf("%d\n", frames);
+  for (unsigned int frame = 0; frame < frames; frame++) {
+    float *left = &samples[frame * 2 + 0], *right = &samples[frame * 2 + 1];
+  }
+}
+
 int main() {
 
   char *file_path = "./music/EQ.mp3";
 
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT,
              "raylib [core] example - basic window");
-  struct Pillar pillars[NUMBER_OF_PILLARS];
-  InitPillars(pillars, NUMBER_OF_PILLARS);
+  InitPillars(NUMBER_OF_PILLARS);
 
   InitAudioDevice();
 
   Music music = LoadMusicStream(file_path);
+
+  AttachAudioStreamProcessor(music.stream, ProcessAudio);
 
   PlayMusicStream(music);
   float timePlayed = 0.0f;
